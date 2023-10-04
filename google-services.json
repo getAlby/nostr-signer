@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "736925604829",
+    "project_id": "gifted-torus-352608",
+    "storage_bucket": "gifted-torus-352608.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:736925604829:android:7c10822a7b3ee63b163434",
+        "android_client_info": {
+          "package_name": "com.getalby.albysigner"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "736925604829-negj4d8ksqqrnttn1kgo0pntcn0a6t2l.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAYEuV_slVkbl2fRnzjFSx_OVyDwgq-Xh4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "736925604829-negj4d8ksqqrnttn1kgo0pntcn0a6t2l.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

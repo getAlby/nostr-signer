@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "alby-signer",
-    "slug": "alby-signer",
+    "slug": "test-project",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -19,6 +19,8 @@
       "bundleIdentifier": "alby-signer"
     },
     "android": {
+      "googleServicesFile": "./google-services.json",
+      "package": "com.getalby.albysigner",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
@@ -29,8 +31,9 @@
     },
     "extra": {
       "eas": {
-        "projectId": "1f250a80-8840-4ee3-a440-ba2c78d17ec8"
+        "projectId": "c717b70a-9308-4f51-ba65-35776ef5bac7"
       }
-    }
+    },
+    "owner": "kiwiidb"
   }
 }
