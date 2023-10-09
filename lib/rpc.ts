@@ -161,6 +161,8 @@ export class NostrRPC {
   }
 
   async reply(response: NostrRPCResponse, event: Event) {
+    this._relay = this._relay || (await connectToRelay(this.relay));
+
     const body = prepareResponse(response.id, response.result, response.error);
 
     const responseEvent = await prepareEvent(
