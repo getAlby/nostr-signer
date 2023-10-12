@@ -1,3 +1,5 @@
+// FIXME: remove this file, it's no longer used!
+
 import applyGlobalPolyfills from "./applyGlobalPolyfills";
 applyGlobalPolyfills();
 import { useState, useEffect, useRef } from "react";

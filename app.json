@@ -1,22 +1,25 @@
 {
   "expo": {
     "name": "alby-signer",
-    "slug": "test-project",
+    "slug": "alby-signer",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
+    "userInterfaceStyle": "automatic",
+    "scheme": "nip46",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "experiments": {
+      "typedRoutes": true
+    },
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "alby-signer"
+      "bundleIdentifier": "alby-signer",
+      "usesNonExemptEncryption": false
     },
     "android": {
       "googleServicesFile": "./google-services.json",
@@ -26,14 +29,12 @@
         "backgroundColor": "#ffffff"
       }
     },
-    "web": {
-      "favicon": "./assets/favicon.png"
-    },
     "extra": {
       "eas": {
-        "projectId": "c717b70a-9308-4f51-ba65-35776ef5bac7"
+        "projectId": "1f250a80-8840-4ee3-a440-ba2c78d17ec8"
       }
     },
-    "owner": "kiwiidb"
+    "owner": "kiwiidb",
+    "plugins": ["expo-router"]
   }
 }
