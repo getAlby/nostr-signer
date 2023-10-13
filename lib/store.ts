@@ -1,4 +1,5 @@
 import * as SecureStore from "expo-secure-store";
+import { nip19, getPublicKey as nostrGetPublicKey } from "nostr-tools";
 
 export type AppConnection = {
   publicKey: string;
@@ -44,7 +45,17 @@ async function removeAppConnection(connectionIndex: number) {
 
 async function addAppConnection(appConnection: AppConnection) {
   let connectionIndex = 0;
-  while (await SecureStore.getItemAsync(connectionIndex.toString())) {
+  while (true) {
+    const appConnectionJson = await SecureStore.getItemAsync(
+      connectionIndex.toString()
+    );
+    if (!appConnectionJson) {
+      break;
+    }
+    const existingAppConnection: AppConnection = JSON.parse(appConnectionJson);
+    if (appConnection.publicKey === existingAppConnection.publicKey) {
+      throw new Error("Already connected to this app");
+    }
     connectionIndex++;
   }
   return SecureStore.setItemAsync(
@@ -57,15 +68,41 @@ function setPrivateKey(privateKey: string) {
   return SecureStore.setItemAsync("privateKey", privateKey);
 }
 
-async function hasPrivateKey(): Promise<boolean> {
+// TODO: move signing here instead of exposing private key!
+async function getPrivateKey(): Promise<string | undefined> {
   const privateKey = await SecureStore.getItemAsync("privateKey");
-  return !!privateKey;
+  return privateKey ?? undefined;
+}
+
+async function getNPub(): Promise<string | undefined> {
+  const privateKey = await SecureStore.getItemAsync("privateKey");
+  if (!privateKey) {
+    return undefined;
+  }
+  return nip19.npubEncode(nostrGetPublicKey(privateKey));
+}
+
+async function logout() {
+  await SecureStore.deleteItemAsync("privateKey");
+  let connectionIndex = 0;
+  while (true) {
+    const connectionJson = await SecureStore.getItemAsync(
+      connectionIndex.toString()
+    );
+    if (!connectionJson) {
+      break;
+    }
+    await SecureStore.deleteItemAsync(connectionIndex.toString());
+    connectionIndex++;
+  }
 }
 
 export const store = {
   setPrivateKey,
-  hasPrivateKey,
+  getNPub,
+  getPrivateKey,
   addAppConnection,
   removeAppConnection,
   getAppConnections,
+  logout,
 };

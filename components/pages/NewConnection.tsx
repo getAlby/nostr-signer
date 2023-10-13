@@ -6,6 +6,9 @@ import React from "react";
 import Toast from "react-native-toast-message";
 import { parseNostrConnectUrl } from "../../lib/parseNostrConnectUrl";
 import { store } from "../../lib/store";
+import { registerExpoPushToken } from "../../lib/registerExpoNotifications";
+import { registerAppWithNip46PushServer } from "../../lib/registerAppWithNip46PushServer";
+import { sendNip46ConnectRequest } from "../../lib/sendNip46ConnectRequest";
 
 export function NewConnection() {
   const [text, setText] = React.useState(
@@ -15,7 +18,10 @@ export function NewConnection() {
   async function connect() {
     const appConnection = parseNostrConnectUrl(text);
 
+    await sendNip46ConnectRequest(appConnection);
     await store.addAppConnection(appConnection);
+    const expoToken = await registerExpoPushToken();
+    await registerAppWithNip46PushServer(expoToken, appConnection.publicKey);
 
     router.replace("/");
     Toast.show({
@@ -38,7 +44,7 @@ export function NewConnection() {
 
       <Button onPress={connect} title="CONNECT" />
 
-      <Link href={{ pathname: "/" }}>
+      <Link href={{ pathname: "/" }} style={{ marginTop: 40 }}>
         <Text>Home</Text>
       </Link>
     </Page>

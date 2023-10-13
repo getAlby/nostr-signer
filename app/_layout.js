@@ -1,11 +1,5 @@
-import applyGlobalPolyfills from "../applyGlobalPolyfills";
-applyGlobalPolyfills();
-import {
-  ThemeProvider,
-  DarkTheme,
-  DefaultTheme,
-  useTheme,
-} from "@react-navigation/native";
+import "../lib/applyGlobalPolyfills";
+import "../lib/registerExpoNotifications";
 
 import { Slot } from "expo-router";
 
