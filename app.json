@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "alby-signer",
-    "slug": "alby-signer",
+    "name": "Alby Nostr Signer",
+    "slug": "nostr-signer",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -18,12 +18,12 @@
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "alby-signer",
+      "bundleIdentifier": "com.getalby.nostr-signer",
       "usesNonExemptEncryption": false
     },
     "android": {
       "googleServicesFile": "./google-services.json",
-      "package": "com.getalby.albysigner",
+      "package": "com.getalby.nostr-signer",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
@@ -31,10 +31,13 @@
     },
     "extra": {
       "eas": {
-        "projectId": "1f250a80-8840-4ee3-a440-ba2c78d17ec8"
+        "projectId": "6aedd85e-7cba-497f-ad8a-043887f92707"
+      },
+      "router": {
+        "origin": false
       }
     },
-    "owner": "kiwiidb",
+    "owner": "roland_alby",
     "plugins": ["expo-router"]
   }
 }
