@@ -23,7 +23,6 @@ export function NewConnection() {
 
   const [connectStatus, setConnectStatus] = React.useState("");
   const [isLoading, setLoading] = React.useState(false);
-  const [text, setText] = React.useState("");
 
   async function scan() {
     const { status } = await BarCodeScanner.requestPermissionsAsync();
@@ -34,20 +33,20 @@ export function NewConnection() {
 
   const handleBarCodeScanned: BarCodeScannedCallback = ({ data }) => {
     setScanning(false);
-    setText(data);
+    connect(data);
     //alert(`Bar code with type ${type} and data ${data} has been scanned!`);
   };
 
   async function paste() {
     const text = await Clipboard.getStringAsync();
-    setText(text);
+    connect(text);
   }
 
-  async function connect() {
+  async function connect(nip46ConnectionString: string) {
     try {
       setLoading(true);
       setConnectStatus("Parsing URL");
-      const appConnection = parseNostrConnectUrl(text);
+      const appConnection = parseNostrConnectUrl(nip46ConnectionString);
       setConnectStatus("Sending NIP-46 connect request");
       // FIXME: if connect doesn't work, user has to manually give their public key to the app
       // - add a new screen for the user to do this?
@@ -110,22 +109,12 @@ export function NewConnection() {
             on your PC and scan the QR code.
           </Text>
 
-          <TextInput
-            style={styles.input}
-            onChangeText={(_text) => setText(_text)}
-            value={text}
-            multiline
-          />
           <View style={{ marginTop: 20 }}>
             <Button onPress={scan} title="SCAN" />
           </View>
 
           <View style={{ marginTop: 20 }}>
             <Button onPress={paste} title="PASTE" />
-          </View>
-
-          <View style={{ marginTop: 20 }}>
-            <Button onPress={connect} title="CONNECT" />
           </View>
 
           <Link href={{ pathname: "/" }} style={{ marginTop: 40 }}>
