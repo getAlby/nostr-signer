@@ -16,17 +16,14 @@ import { registerExpoPushToken } from "../../lib/registerExpoNotifications";
 import { registerAppWithNip46PushServer } from "../../lib/registerAppWithNip46PushServer";
 import { sendNip46ConnectRequest } from "../../lib/sendNip46ConnectRequest";
 import { BarCodeScannedCallback, BarCodeScanner } from "expo-barcode-scanner";
+import * as Clipboard from "expo-clipboard";
 
 export function NewConnection() {
   const [isScanning, setScanning] = React.useState(false);
 
   const [connectStatus, setConnectStatus] = React.useState("");
   const [isLoading, setLoading] = React.useState(false);
-  const [text, setText] = React.useState(
-    ""
-    //"nostrconnect://b889ff5b1513b641e2a139f661a661364979c5beee91842f8f0ef42ab558e9d4?metadata=%7B%22name%22%3A%22Example%22%2C%22description%22%3A%22%F0%9F%94%89%F0%9F%94%89%F0%9F%94%89%22%2C%22url%22%3A%22https%3A%2F%2Fexample.com%22%2C%22icons%22%3A%5B%22https%3A%2F%2Fexample.com%2Ficon.png%22%5D%7D&relay=wss%3A%2F%2Frelay.damus.io"
-    //"nostrconnect://6c83959af5ed9bc73d19aa702b7e9752b643815416d1109f055552b44e4d373b?metadata=%7B%22name%22%3A%22Example%22%2C%22description%22%3A%22%F0%9F%94%89%F0%9F%94%89%F0%9F%94%89%22%2C%22url%22%3A%22https%3A%2F%2Fexample.com%22%2C%22icons%22%3A%5B%22https%3A%2F%2Fexample.com%2Ficon.png%22%5D%7D&relay=wss%3A%2F%2Frelay.damus.io"
-  );
+  const [text, setText] = React.useState("");
 
   async function scan() {
     const { status } = await BarCodeScanner.requestPermissionsAsync();
@@ -41,13 +38,29 @@ export function NewConnection() {
     //alert(`Bar code with type ${type} and data ${data} has been scanned!`);
   };
 
+  async function paste() {
+    const text = await Clipboard.getStringAsync();
+    setText(text);
+  }
+
   async function connect() {
     try {
       setLoading(true);
       setConnectStatus("Parsing URL");
       const appConnection = parseNostrConnectUrl(text);
       setConnectStatus("Sending NIP-46 connect request");
-      await sendNip46ConnectRequest(appConnection);
+      // FIXME: if connect doesn't work, user has to manually give their public key to the app
+      // - add a new screen for the user to do this?
+      try {
+        await sendNip46ConnectRequest(appConnection);
+      } catch (error) {
+        console.error(error);
+        Toast.show({
+          type: "info",
+          text1: "Failed to send connect request",
+          text2: "Manual connection required",
+        });
+      }
       await store.addAppConnection(appConnection);
       setConnectStatus("Registering push notifications");
       const expoToken = await registerExpoPushToken();
@@ -105,6 +118,10 @@ export function NewConnection() {
           />
           <View style={{ marginTop: 20 }}>
             <Button onPress={scan} title="SCAN" />
+          </View>
+
+          <View style={{ marginTop: 20 }}>
+            <Button onPress={paste} title="PASTE" />
           </View>
 
           <View style={{ marginTop: 20 }}>

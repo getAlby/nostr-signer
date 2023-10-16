@@ -74,12 +74,20 @@ async function getPrivateKey(): Promise<string | undefined> {
   return privateKey ?? undefined;
 }
 
-async function getNPub(): Promise<string | undefined> {
+async function getPublicKey(): Promise<string | undefined> {
   const privateKey = await SecureStore.getItemAsync("privateKey");
   if (!privateKey) {
     return undefined;
   }
-  return nip19.npubEncode(nostrGetPublicKey(privateKey));
+  return nostrGetPublicKey(privateKey);
+}
+
+async function getNPub(): Promise<string | undefined> {
+  const pubkey = await getPublicKey();
+  if (!pubkey) {
+    return undefined;
+  }
+  return nip19.npubEncode(pubkey);
 }
 
 async function logout() {
@@ -99,6 +107,7 @@ async function logout() {
 
 export const store = {
   setPrivateKey,
+  getPublicKey,
   getNPub,
   getPrivateKey,
   addAppConnection,

@@ -6,7 +6,7 @@ export async function sendNip46ConnectRequest(appConnection: AppConnection) {
   return new Promise<void>(async (resolve, reject) => {
     setTimeout(() => {
       reject("Timeout connecting to app");
-    }, 10000);
+    }, 3000);
     try {
       const privateKey = await store.getPrivateKey();
       const handler = new NostrSigner({
