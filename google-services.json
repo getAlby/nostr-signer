@@ -9,7 +9,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:736925604829:android:7c10822a7b3ee63b163434",
         "android_client_info": {
-          "package_name": "com.getalby.albysigner"
+          "package_name": "com.getalby.nostr_signer"
         }
       },
       "oauth_client": [

@@ -23,7 +23,7 @@
     },
     "android": {
       "googleServicesFile": "./google-services.json",
-      "package": "com.getalby.nostr-signer",
+      "package": "com.getalby.nostr_signer",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
