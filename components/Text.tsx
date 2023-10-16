@@ -1,10 +1,21 @@
-import { StyleSheet, Text as _Text, useColorScheme } from "react-native";
+import {
+  StyleSheet,
+  TextProps,
+  Text as _Text,
+  useColorScheme,
+} from "react-native";
 
-export function Text({ children }: React.PropsWithChildren) {
+export function Text({
+  children,
+  ...otherProps
+}: React.PropsWithChildren<TextProps>) {
   const colorScheme = useColorScheme();
 
   return (
-    <_Text style={[styles.text, styles[colorScheme + "Text"]]}>
+    <_Text
+      {...otherProps}
+      style={[otherProps.style, styles.text, styles[colorScheme + "Text"]]}
+    >
       {children}
     </_Text>
   );

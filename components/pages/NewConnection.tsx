@@ -86,6 +86,17 @@ export function NewConnection() {
         />
       ) : (
         <>
+          <Text style={{ marginVertical: 20 }}>
+            Not sure what to do? open the{" "}
+            <Link
+              href="https://rolznz.github.io/connect/"
+              style={{ color: "#ff00ff" }}
+            >
+              Nostr Connect Playground
+            </Link>{" "}
+            on your PC and scan the QR code.
+          </Text>
+
           <TextInput
             style={styles.input}
             onChangeText={(_text) => setText(_text)}
