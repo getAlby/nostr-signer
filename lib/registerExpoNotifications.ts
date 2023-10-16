@@ -2,6 +2,7 @@ import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
 import { Platform } from "react-native";
 import { decryptNip46PushServerNotification } from "./decryptNip46PushServerNotification";
+import Constants from "expo-constants";
 
 console.log("Executing registerExpoNotifications");
 
@@ -60,7 +61,11 @@ export async function registerExpoPushToken(): Promise<string> {
     if (finalStatus !== "granted") {
       throw new Error("Failed to get push token for push notification!");
     }
-    token = (await Notifications.getExpoPushTokenAsync()).data;
+    token = (
+      await Notifications.getExpoPushTokenAsync({
+        projectId: Constants.expoConfig.extra.eas.projectId,
+      })
+    ).data;
     console.log(token);
   } else {
     throw new Error("Must use physical device for Push Notifications");
