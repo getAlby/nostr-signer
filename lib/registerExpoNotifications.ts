@@ -1,8 +1,9 @@
 import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
 import { Platform } from "react-native";
-import { decryptNip46PushServerNotification } from "./decryptNip46PushServerNotification";
 import Constants from "expo-constants";
+import { useAppStore } from "./AppStore";
+import { router } from "expo-router";
 
 console.log("Executing registerExpoNotifications");
 
@@ -24,7 +25,9 @@ Notifications.addNotificationReceivedListener(async (notification) => {
   console.log("Notification received", notification);
   Notifications.dismissNotificationAsync(notification.request.identifier);
 
-  decryptNip46PushServerNotification(notification);
+  //decryptNip46PushServerNotification(notification);
+  useAppStore.getState().addNotification(notification);
+  router.push("/sign");
 });
 
 Notifications.addNotificationResponseReceivedListener((response) => {
@@ -32,7 +35,14 @@ Notifications.addNotificationResponseReceivedListener((response) => {
 
   // NOTE: currently responding to notification of encrypted content
   // if it were decrypted, we can act upon it and respond
-  decryptNip46PushServerNotification(response.notification);
+
+  // TODO:
+  // 1. add to queue
+  // 2. navigate to approval page
+  // 3. on approval page display latest notification
+  useAppStore.getState().addNotification(response.notification);
+  router.push("/sign");
+  //decryptNip46PushServerNotification(response.notification);
 
   //const allowSign = response.actionIdentifier === "allow";
   //respondNotification(allowSign, response.notification, handler);
@@ -63,6 +73,7 @@ export async function registerExpoPushToken(): Promise<string> {
     }
     token = (
       await Notifications.getExpoPushTokenAsync({
+        // TODO: confirm this is correct
         projectId: Constants.expoConfig.extra.eas.projectId,
       })
     ).data;
