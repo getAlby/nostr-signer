@@ -21,6 +21,7 @@
     "crypto-js": "^4.1.1",
     "events": "^3.3.0",
     "expo": "~49.0.8",
+    "expo-barcode-scanner": "~12.5.3",
     "expo-constants": "~14.4.2",
     "expo-crypto": "~12.4.1",
     "expo-dev-client": "~2.4.8",
