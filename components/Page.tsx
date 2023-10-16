@@ -1,4 +1,10 @@
-import { StyleSheet, View, useColorScheme } from "react-native";
+import {
+  Keyboard,
+  StyleSheet,
+  TouchableWithoutFeedback,
+  View,
+  useColorScheme,
+} from "react-native";
 import Toast, { ToastConfig } from "react-native-toast-message";
 
 export function Page({ children }: React.PropsWithChildren) {
@@ -6,9 +12,11 @@ export function Page({ children }: React.PropsWithChildren) {
 
   return (
     <>
-      <View style={[styles.container, styles[colorScheme + "Container"]]}>
-        {children}
-      </View>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+        <View style={[styles.container, styles[colorScheme + "Container"]]}>
+          {children}
+        </View>
+      </TouchableWithoutFeedback>
       <Toast />
     </>
   );
