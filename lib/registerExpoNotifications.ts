@@ -73,7 +73,8 @@ export async function registerExpoPushToken(): Promise<string> {
     }
     token = (
       await Notifications.getExpoPushTokenAsync({
-        // TODO: confirm this is correct
+        // TODO: this works for Android
+        //  confirm this is correct for iOS + Expo Go
         projectId: Constants.expoConfig.extra.eas.projectId,
       })
     ).data;

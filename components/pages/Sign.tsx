@@ -2,7 +2,7 @@ import { Link } from "expo-router";
 import { Page } from "../Page";
 import { Text } from "../Text";
 import React from "react";
-import { Button } from "react-native";
+import { ActivityIndicator, Button, View } from "react-native";
 import Toast from "react-native-toast-message";
 import { useAppStore } from "../../lib/AppStore";
 import {
@@ -11,9 +11,10 @@ import {
 } from "../../lib/decryptNip46PushServerNotification";
 import { NostrSigner } from "../../lib/nostr";
 import { store } from "../../lib/store";
-import { getPublicKey } from "nostr-tools";
+import { finishEvent, getPublicKey } from "nostr-tools";
 
 export function Sign() {
+  const [isSigning, setSigning] = React.useState(false);
   const notifications = useAppStore((store) => store.notifications);
   const [decryptResult, setDecryptResult] = React.useState<
     DecryptResult | undefined
@@ -47,6 +48,7 @@ export function Sign() {
 
   const approve = async () => {
     try {
+      setSigning(true);
       // TODO: do not access private key directly
       const privateKey = await store.getPrivateKey();
       // TODO: move this code
@@ -54,10 +56,25 @@ export function Sign() {
         secretKey: privateKey,
         relay: decryptResult.appConnection.relay,
       });
+
+      let result;
+      switch (decryptResult.payload.method) {
+        case "get_public_key":
+          result = getPublicKey(privateKey);
+          break;
+        case "sign_event":
+          result = finishEvent(decryptResult.payload.params[0], privateKey);
+          break;
+        default:
+          throw new Error(
+            "Unsupported NIP-46 method: " + decryptResult.payload.method
+          );
+      }
+
       await handler.reply(
         {
           id: decryptResult.payload.id,
-          result: getPublicKey(privateKey),
+          result,
           error: null,
         },
         decryptResult.event
@@ -77,6 +94,7 @@ export function Sign() {
       });
     }
     useAppStore.getState().shiftNotification();
+    setSigning(false);
   };
 
   const deny = () => {
@@ -85,12 +103,41 @@ export function Sign() {
 
   return (
     <Page>
-      <Text>{notifications.length} events to sign</Text>
-      {decryptResult ? (
+      {isSigning ? (
+        <>
+          <ActivityIndicator size="large" />
+        </>
+      ) : decryptResult ? (
         <>
           <Text>SIGN {decryptResult.payload.method}</Text>
-          <Button title="Approve" onPress={approve} />
-          <Button title="Deny" onPress={deny} />
+          {decryptResult.payload.params.length > 0 && (
+            <>
+              <Text>
+                Kind {JSON.stringify(decryptResult.payload.params[0].kind)}
+              </Text>
+              <Text>
+                Content{" "}
+                {JSON.stringify(decryptResult.payload.params[0].content)}
+              </Text>
+              <Text>
+                Event {JSON.stringify(decryptResult.payload.params[0])}
+              </Text>
+            </>
+          )}
+
+          <View
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "center",
+              alignItems: "center",
+              width: "100%",
+              gap: 40,
+            }}
+          >
+            <Button title="Ignore" onPress={deny} />
+            <Button title="Sign" onPress={approve} />
+          </View>
         </>
       ) : (
         <>
