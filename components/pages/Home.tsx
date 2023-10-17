@@ -22,12 +22,6 @@ export function Home() {
     })();
   }, []);
 
-  async function login() {
-    await store.setPrivateKey(
-      "f4b9141b8bb86c873d077218717540da701be15442bd0359227106d1d0fbe392"
-    );
-    setNPub(await store.getNPub());
-  }
   async function logout() {
     await store.logout();
     setNPub(undefined);
@@ -50,7 +44,9 @@ export function Home() {
       ) : !npub ? (
         <>
           <Text>Welcome to Alby Signer</Text>
-          <Button onPress={login} title="login" />
+          <Link href="/login">
+            <Text>Login</Text>
+          </Link>
         </>
       ) : (
         <>
