@@ -142,8 +142,11 @@ export function Sign() {
       ) : (
         <>
           <Text>No more notifications to sign</Text>
-          <Link href={{ pathname: "/" }} style={{ marginTop: 20 }}>
-            <Text>Home</Text>
+          <Link
+            href={{ pathname: "/" }}
+            style={{ marginTop: 20, color: "#f0f" }}
+          >
+            Home
           </Link>
         </>
       )}

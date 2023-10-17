@@ -251,15 +251,19 @@ export function isValidRequest(payload: any): boolean {
 
 export function isValidResponse(payload: any): boolean {
   console.log("Checking response", payload);
-  if (!payload) return false;
-
-  const keys = Object.keys(payload);
-  if (
-    !keys.includes("id") ||
-    //!keys.includes("result") || // result is optional for connect
-    !keys.includes("error")
-  )
+  if (!payload) {
+    console.warn("No payload found");
     return false;
+  }
+
+  if (
+    !payload.id // ||
+    //!keys.includes("result") || // result is optional for connect
+    //keys.includes("error")
+  ) {
+    console.warn("No ID found");
+    return false;
+  }
 
   return true;
 }

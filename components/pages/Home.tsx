@@ -1,4 +1,4 @@
-import { Link, router } from "expo-router";
+import { Link } from "expo-router";
 import { Page } from "../Page";
 import { Text } from "../Text";
 import React from "react";
@@ -44,8 +44,11 @@ export function Home() {
       ) : !npub ? (
         <>
           <Text>Welcome to Alby Signer</Text>
-          <Link href="/login">
-            <Text>Login</Text>
+          <Link href="/about" style={{ marginTop: 40, color: "#f0f" }}>
+            About
+          </Link>
+          <Link href="/login" style={{ marginTop: 40, color: "#f0f" }}>
+            Login
           </Link>
         </>
       ) : (
@@ -56,7 +59,9 @@ export function Home() {
           <Button onPress={logout} title="logout" />
           {appConnections.length > 0 ? (
             <>
-              <Text>Your connections</Text>
+              <Text style={{ marginTop: 40, fontSize: 20 }}>
+                Your connections
+              </Text>
               {appConnections.map((connection, index) => (
                 <Link
                   key={index}
@@ -66,19 +71,26 @@ export function Home() {
                   }}
                   style={{
                     marginTop: 20,
+                    color: "#f0f",
                   }}
                 >
-                  <Text>{connection.metadata.name}</Text>
+                  {connection.metadata.name}
                 </Link>
               ))}
-              <Link href={{ pathname: "/new" }} style={{ marginTop: 40 }}>
-                <Text>Add another connection</Text>
+              <Link
+                href={{ pathname: "/new" }}
+                style={{ marginTop: 60, color: "#f0f" }}
+              >
+                Add another connection
               </Link>
             </>
           ) : (
             <>
-              <Link href={{ pathname: "/new" }} style={{ marginTop: 40 }}>
-                <Text>Create your first connection</Text>
+              <Link
+                href={{ pathname: "/new" }}
+                style={{ marginTop: 40, color: "#f0f" }}
+              >
+                Create your first connection
               </Link>
             </>
           )}

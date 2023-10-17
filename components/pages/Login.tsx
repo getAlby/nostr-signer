@@ -45,17 +45,9 @@ export function Login() {
         <Button title="Random" onPress={generateKey} />
       </View>
 
-      <Text>
-        View on{" "}
-        <Link
-          style={{ color: "#f0f" }}
-          href="https://github.com/getAlby/nostr-signer"
-        >
-          Github
-        </Link>
-      </Text>
-
-      <Button title="Continue" onPress={login} />
+      <View style={{ marginTop: 40 }}>
+        <Button title="Continue" onPress={login} />
+      </View>
     </Page>
   );
 }

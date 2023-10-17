@@ -43,8 +43,8 @@ export function Connection() {
 
       <Button onPress={disconnect} title="DISCONNECT" />
 
-      <Link href={{ pathname: "/" }} style={{ marginTop: 20 }}>
-        <Text>Home</Text>
+      <Link href={{ pathname: "/" }} style={{ marginTop: 40, color: "#f0f" }}>
+        Home
       </Link>
     </Page>
   );

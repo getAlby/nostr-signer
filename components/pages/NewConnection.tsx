@@ -117,8 +117,11 @@ export function NewConnection() {
             <Button onPress={paste} title="PASTE" />
           </View>
 
-          <Link href={{ pathname: "/" }} style={{ marginTop: 40 }}>
-            <Text>Home</Text>
+          <Link
+            href={{ pathname: "/" }}
+            style={{ marginTop: 40, color: "#f0f" }}
+          >
+            Home
           </Link>
         </>
       )}
