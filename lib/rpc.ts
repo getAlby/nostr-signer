@@ -92,24 +92,29 @@ export class NostrRPC {
           if (!plaintext) throw new Error("failed to decrypt event");
           payload = JSON.parse(plaintext);
         } catch (error) {
-          console.error(error);
+          console.error("Failed to decrypt event", error);
           return;
         }
 
-        // ignore all the events that are not NostrRPCResponse events
-        if (!isValidResponse(payload)) return;
+        try {
+          // ignore all the events that are not NostrRPCResponse events
+          if (!isValidResponse(payload)) throw new Error("Invalid response");
 
-        // ignore all the events that are not for this request
-        if (payload.id !== id) return;
+          // ignore all the events that are not for this request
+          if (payload.id !== id)
+            throw new Error("Wrong payload ID, expected " + id);
 
-        // if the response is an error, reject the promise
-        if (payload.error) {
-          reject(payload.error);
-        }
+          // if the response is an error, reject the promise
+          if (payload.error) {
+            throw new Error("Payload error: " + payload.error);
+          }
 
-        // if the response is a result, resolve the promise
-        if (payload.result) {
-          resolve(payload.result);
+          // if the response is a result, resolve the promise
+          if (payload.result) {
+            resolve(payload.result);
+          }
+        } catch (error) {
+          console.warn("Failed to handle payload", error);
         }
       });
 
@@ -123,6 +128,9 @@ export class NostrRPC {
   }
 
   async listen(): Promise<Sub> {
+    if (1 + 2 > 1) {
+      throw new Error("LISTEN DISABLED");
+    }
     this._relay = await connectToRelay(this.relay);
 
     const sub = this._relay.sub([
@@ -161,6 +169,8 @@ export class NostrRPC {
   }
 
   async reply(response: NostrRPCResponse, event: Event) {
+    this._relay = this._relay || (await connectToRelay(this.relay));
+
     const body = prepareResponse(response.id, response.result, response.error);
 
     const responseEvent = await prepareEvent(
@@ -240,12 +250,13 @@ export function isValidRequest(payload: any): boolean {
 }
 
 export function isValidResponse(payload: any): boolean {
+  console.log("Checking response", payload);
   if (!payload) return false;
 
   const keys = Object.keys(payload);
   if (
     !keys.includes("id") ||
-    !keys.includes("result") ||
+    //!keys.includes("result") || // result is optional for connect
     !keys.includes("error")
   )
     return false;

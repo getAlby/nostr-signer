@@ -13,4 +13,4 @@ const applyGlobalPolyfills = () => {
   });
 };
 
-export default applyGlobalPolyfills;
+applyGlobalPolyfills();

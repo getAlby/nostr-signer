@@ -1,39 +1,51 @@
 {
   "expo": {
-    "name": "alby-signer",
-    "slug": "test-project",
+    "name": "Alby Nostr Signer",
+    "slug": "nostr-signer",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
+    "userInterfaceStyle": "automatic",
+    "scheme": "nip46",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "experiments": {
+      "typedRoutes": true
+    },
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "alby-signer"
+      "bundleIdentifier": "com.getalby.nostr-signer",
+      "usesNonExemptEncryption": false
     },
     "android": {
       "googleServicesFile": "./google-services.json",
-      "package": "com.getalby.albysigner",
+      "package": "com.getalby.nostr_signer",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       }
     },
-    "web": {
-      "favicon": "./assets/favicon.png"
-    },
     "extra": {
       "eas": {
-        "projectId": "c717b70a-9308-4f51-ba65-35776ef5bac7"
+        "projectId": "6aedd85e-7cba-497f-ad8a-043887f92707"
+      },
+      "router": {
+        "origin": false
       }
     },
-    "owner": "kiwiidb"
+    "owner": "roland_alby",
+    "plugins": [
+      "expo-router",
+      [
+        "expo-barcode-scanner",
+        {
+          "cameraPermission": "Allow $(PRODUCT_NAME) to access camera."
+        }
+      ]
+    ]
   }
 }
