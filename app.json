@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "Alby Nostr Signer",
+    "name": "Nostr Signer",
     "slug": "nostr-signer",
     "version": "1.1.0",
     "orientation": "portrait",
