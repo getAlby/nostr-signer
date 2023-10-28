@@ -38,6 +38,9 @@ export function Home() {
   function login() {
     router.replace("/login");
   }
+  function addConnection() {
+    router.replace("/new");
+  }
 
   async function copyPublicKey() {
     await Clipboard.setStringAsync(publicKey);
@@ -76,47 +79,53 @@ export function Home() {
         </>
       ) : (
         <>
-          <Text>Logged in as {npub}</Text>
-          <Button title="Copy hex" onPress={copyPublicKey} />
-          <Button title="Copy npub" onPress={copyNpub} />
-          <Button onPress={logout} title="logout" />
-          {appConnections.length > 0 ? (
-            <>
-              <Text style={{ marginTop: 40, fontSize: 20 }}>
-                Your connections
-              </Text>
-              {appConnections.map((connection, index) => (
+          <Text style={styles.welcome}>Greetings</Text>
+          <Content>
+            <Text>Logged in as {npub}</Text>
+            <Button title="Copy hex" onPress={copyPublicKey} />
+            <Button title="Copy npub" onPress={copyNpub} />
+            <Button onPress={logout} title="logout" />
+            {appConnections.length > 0 && (
+              <>
+                <Text style={{ marginTop: 40, fontSize: 20 }}>
+                  Your connections
+                </Text>
+                {appConnections.map((connection, index) => (
+                  <Link
+                    key={index}
+                    href={{
+                      pathname: "/connections/[index]",
+                      params: { index },
+                    }}
+                    style={{
+                      marginTop: 20,
+                      color: "#f0f",
+                    }}
+                  >
+                    {connection.metadata.name}
+                  </Link>
+                ))}
                 <Link
-                  key={index}
-                  href={{
-                    pathname: "/connections/[index]",
-                    params: { index },
-                  }}
-                  style={{
-                    marginTop: 20,
-                    color: "#f0f",
-                  }}
+                  href={{ pathname: "/new" }}
+                  style={{ marginTop: 60, color: "#f0f" }}
                 >
-                  {connection.metadata.name}
+                  Add another connection
                 </Link>
-              ))}
-              <Link
-                href={{ pathname: "/new" }}
-                style={{ marginTop: 60, color: "#f0f" }}
-              >
-                Add another connection
-              </Link>
-            </>
-          ) : (
-            <>
-              <Link
-                href={{ pathname: "/new" }}
-                style={{ marginTop: 40, color: "#f0f" }}
-              >
-                Create your first connection
-              </Link>
-            </>
-          )}
+              </>
+            )}
+          </Content>
+
+          <Footer>
+            <FooterButton
+              secondary
+              onPress={openAboutPage}
+              title="How does it work?"
+            />
+            <FooterButton
+              onPress={addConnection}
+              title="Add a new connection"
+            />
+          </Footer>
         </>
       )}
     </Page>

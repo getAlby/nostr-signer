@@ -7,5 +7,11 @@ export function Content({ children }: React.PropsWithChildren) {
 const styles = StyleSheet.create({
   content: {
     flex: 1,
+    width: "100%",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "column",
+    padding: 32,
   },
 });

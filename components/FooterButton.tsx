@@ -1,5 +1,6 @@
-import { Pressable, StyleSheet, Text } from "react-native";
+import { Pressable, StyleSheet } from "react-native";
 import { colors, fontSizes, fonts } from "../app/styles";
+import { Text } from "./Text";
 
 type FooterButtonProps = {
   title: string;
@@ -32,7 +33,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors.primary + "AA",
   },
   title: {
-    color: colors.neutral,
     fontSize: fontSizes.lg,
     fontFamily: fonts.medium,
   },

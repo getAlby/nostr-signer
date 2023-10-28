@@ -91,13 +91,14 @@ export function NewConnection() {
           <ActivityIndicator size="large" style={{ marginVertical: 40 }} />
           <Text>{connectStatus}</Text>
         </>
-      ) : isScanning ? (
-        <BarCodeScanner
-          onBarCodeScanned={handleBarCodeScanned}
-          style={StyleSheet.absoluteFillObject}
-        />
       ) : (
         <>
+          {isScanning && (
+            <BarCodeScanner
+              onBarCodeScanned={handleBarCodeScanned}
+              style={styles.scanner}
+            />
+          )}
           <Text style={{ marginVertical: 20 }}>
             Not sure what to do? open the{" "}
             <Link
@@ -129,13 +130,8 @@ export function NewConnection() {
   );
 }
 const styles = StyleSheet.create({
-  input: {
-    borderColor: "#8e30eb",
-    borderWidth: 1,
-    color: "#8e30eb",
-    padding: 4,
-    margin: 4,
+  scanner: {
     width: "100%",
-    height: 200,
+    height: "50%",
   },
 });

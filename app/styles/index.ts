@@ -1,7 +1,8 @@
 // TODO: consider using NativeWind (https://www.nativewind.dev/)
 export const colors = {
-  neutral: "#C8D5BB",
   primary: "#47585C",
+  neutral: "#C8D5BB",
+  "neutral-secondary": "#8B8B8B",
 };
 export const fonts = {
   extralight: "GeneralSans-Extralight",
