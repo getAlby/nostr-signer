@@ -1,10 +1,14 @@
-import { Link } from "expo-router";
+import { Link, router } from "expo-router";
 import { Page } from "../Page";
 import { Text } from "../Text";
 import React from "react";
 import { AppConnection, store } from "../../lib/store";
-import { Button } from "react-native";
+import { Button, StyleSheet, View } from "react-native";
 import * as Clipboard from "expo-clipboard";
+import { fontSizes, fonts } from "../../app/styles";
+import { Footer } from "../Footer";
+import { FooterButton } from "../FooterButton";
+import { Content } from "../Content";
 
 export function Home() {
   const [isLoading, setLoading] = React.useState(true);
@@ -28,6 +32,13 @@ export function Home() {
     setAppConnections([]);
   }
 
+  function openAboutPage() {
+    router.replace("/about");
+  }
+  function login() {
+    router.replace("/login");
+  }
+
   async function copyPublicKey() {
     await Clipboard.setStringAsync(publicKey);
   }
@@ -43,13 +54,25 @@ export function Home() {
         </>
       ) : !npub ? (
         <>
-          <Text>Welcome to Alby Signer</Text>
-          <Link href="/about" style={{ marginTop: 40, color: "#f0f" }}>
-            About
-          </Link>
-          <Link href="/login" style={{ marginTop: 40, color: "#f0f" }}>
-            Login
-          </Link>
+          <Text style={styles.welcome}>Welcome to</Text>
+          <View style={styles.titleContainer}>
+            <Text style={styles.title}>nostr</Text>
+            <Text style={styles.titleBold}>Signer</Text>
+          </View>
+          <Text style={styles.description}>
+            Sign Nostr events remotely{"\n"}with your phone
+          </Text>
+
+          <Content></Content>
+
+          <Footer>
+            <FooterButton
+              secondary
+              onPress={openAboutPage}
+              title="How does it work?"
+            />
+            <FooterButton onPress={login} title="Start" />
+          </Footer>
         </>
       ) : (
         <>
@@ -99,3 +122,33 @@ export function Home() {
     </Page>
   );
 }
+
+const styles = StyleSheet.create({
+  welcome: {
+    fontSize: fontSizes["3xl"],
+    fontFamily: fonts.light,
+    position: "absolute",
+    bottom: "88%",
+  },
+  title: {
+    fontSize: fontSizes["6xl"],
+    fontFamily: fonts.extralight,
+  },
+  titleBold: {
+    fontFamily: fonts.regular,
+    fontSize: fontSizes["6xl"],
+  },
+  titleContainer: {
+    display: "flex",
+    flexDirection: "row",
+    position: "absolute",
+    top: "27%",
+  },
+  description: {
+    fontSize: fontSizes.lg,
+    position: "absolute",
+    top: "40%",
+    textAlign: "center",
+  },
+  start: {},
+});

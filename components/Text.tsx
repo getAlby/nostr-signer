@@ -4,6 +4,7 @@ import {
   Text as _Text,
   useColorScheme,
 } from "react-native";
+import { colors, fontSizes, fonts } from "../app/styles";
 
 export function Text({
   children,
@@ -12,21 +13,16 @@ export function Text({
   const colorScheme = useColorScheme();
 
   return (
-    <_Text
-      {...otherProps}
-      style={[otherProps.style, styles.text, styles[colorScheme + "Text"]]}
-    >
+    <_Text {...otherProps} style={[styles.text, otherProps.style]}>
       {children}
     </_Text>
   );
 }
 
 const styles = StyleSheet.create({
-  text: {},
-  lightText: {
-    color: "#242c40",
-  },
-  darkText: {
-    color: "#d0d0c0",
+  text: {
+    color: colors.neutral,
+    fontSize: fontSizes.base,
+    fontFamily: fonts.regular,
   },
 });

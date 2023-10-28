@@ -1,21 +1,45 @@
 import {
+  ImageBackground,
   Keyboard,
   StyleSheet,
   TouchableWithoutFeedback,
   View,
-  useColorScheme,
 } from "react-native";
-import Toast, { ToastConfig } from "react-native-toast-message";
+import Toast from "react-native-toast-message";
+import { useFonts } from "expo-font";
+import React from "react";
+import { SplashScreen } from "expo-router";
+const splash = require("../assets/splash.png");
 
 export function Page({ children }: React.PropsWithChildren) {
-  const colorScheme = useColorScheme();
+  const [fontsLoaded] = useFonts({
+    "GeneralSans-Extralight": require("../assets/fonts/GeneralSans-Extralight.otf"),
+    "GeneralSans-Light": require("../assets/fonts/GeneralSans-Light.otf"),
+    "GeneralSans-Regular": require("../assets/fonts/GeneralSans-Regular.otf"),
+    "GeneralSans-Medium": require("../assets/fonts/GeneralSans-Medium.otf"),
+    "GeneralSans-Bold": require("../assets/fonts/GeneralSans-Bold.otf"),
+  });
+  const splashLoaded = !!splash;
+  const loaded = fontsLoaded && splashLoaded;
+  React.useEffect(() => {
+    if (loaded) {
+      SplashScreen.hideAsync();
+    }
+  });
+  if (!loaded) {
+    return null;
+  }
 
   return (
     <>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-        <View style={[styles.container, styles[colorScheme + "Container"]]}>
-          {children}
-        </View>
+        <ImageBackground
+          style={styles.imgBackground}
+          resizeMode="cover"
+          source={splash}
+        >
+          <View style={styles.container}>{children}</View>
+        </ImageBackground>
       </TouchableWithoutFeedback>
       <Toast />
     </>
@@ -27,12 +51,14 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    padding: 10,
+    padding: 0,
+    height: "100%",
+    display: "flex",
+    flexDirection: "column",
   },
-  lightContainer: {
-    backgroundColor: "#d0d0c0",
-  },
-  darkContainer: {
-    backgroundColor: "#242c40",
+  imgBackground: {
+    width: "100%",
+    height: "100%",
+    flex: 1,
   },
 });
