@@ -1,10 +1,17 @@
-import { Link } from "expo-router";
+import { Link, router } from "expo-router";
 import { Page } from "../Page";
 import { Text } from "../Text";
 import React from "react";
 import { AppConnection, store } from "../../lib/store";
-import { Button } from "react-native";
+import { Button, FlatList, StyleSheet, View } from "react-native";
 import * as Clipboard from "expo-clipboard";
+import { colors, commonStyles, fontSizes, fonts } from "../../app/styles";
+import { Footer } from "../Footer";
+import { FooterButton } from "../FooterButton";
+import { Content } from "../Content";
+import { IconButton } from "../IconButton";
+import Toast from "react-native-toast-message";
+import { Header } from "../Header";
 
 export function Home() {
   const [isLoading, setLoading] = React.useState(true);
@@ -13,6 +20,8 @@ export function Home() {
   const [appConnections, setAppConnections] = React.useState<AppConnection[]>(
     []
   );
+  const [copyOptionsOpen, setCopyOptionsOpen] = React.useState(false);
+
   React.useEffect(() => {
     (async () => {
       setNPub(await store.getNPub());
@@ -28,74 +37,172 @@ export function Home() {
     setAppConnections([]);
   }
 
+  function openAboutPage() {
+    router.replace("/about");
+  }
+  function login() {
+    router.replace("/login");
+  }
+  function addConnection() {
+    router.replace("/new");
+  }
+
+  async function chooseCopyType() {
+    setCopyOptionsOpen(true);
+  }
   async function copyPublicKey() {
     await Clipboard.setStringAsync(publicKey);
+    Toast.show({
+      type: "success",
+      text1: "Public Key Copied",
+      text2: `Format: Hex`,
+    });
   }
   async function copyNpub() {
     await Clipboard.setStringAsync(npub);
+    Toast.show({
+      type: "success",
+      text1: "Public Key Copied",
+      text2: `Format: NPub`,
+    });
   }
 
   return (
     <Page>
-      {isLoading ? (
+      {copyOptionsOpen ? (
+        <Content>
+          <Text>Choose an option</Text>
+          <IconButton title="Copy NPub" onPress={copyNpub} />
+          <IconButton title="Copy Hex" onPress={copyPublicKey} />
+          <IconButton
+            title="Cancel"
+            onPress={() => setCopyOptionsOpen(false)}
+          />
+        </Content>
+      ) : isLoading ? (
         <>
           <Text>Loading...</Text>
         </>
       ) : !npub ? (
         <>
-          <Text>Welcome to Alby Signer</Text>
-          <Link href="/about" style={{ marginTop: 40, color: "#f0f" }}>
-            About
-          </Link>
-          <Link href="/login" style={{ marginTop: 40, color: "#f0f" }}>
-            Login
-          </Link>
+          <Header large showBackButton={false} title="Welcome to" />
+          <View style={styles.titleContainer}>
+            <Text style={styles.title}>nostr</Text>
+            <Text style={styles.titleBold}>Signer</Text>
+          </View>
+          <Text style={styles.description}>
+            Sign Nostr events remotely{"\n"}with your phone
+          </Text>
+
+          <Content></Content>
+
+          <Footer>
+            <FooterButton
+              secondary
+              onPress={openAboutPage}
+              title="How does it work?"
+            />
+            <FooterButton onPress={login} title="Start" />
+          </Footer>
         </>
       ) : (
         <>
-          <Text>Logged in as {npub}</Text>
-          <Button title="Copy hex" onPress={copyPublicKey} />
-          <Button title="Copy npub" onPress={copyNpub} />
-          <Button onPress={logout} title="logout" />
           {appConnections.length > 0 ? (
-            <>
-              <Text style={{ marginTop: 40, fontSize: 20 }}>
-                Your connections
-              </Text>
-              {appConnections.map((connection, index) => (
-                <Link
-                  key={index}
-                  href={{
-                    pathname: "/connections/[index]",
-                    params: { index },
-                  }}
-                  style={{
-                    marginTop: 20,
-                    color: "#f0f",
-                  }}
-                >
-                  {connection.metadata.name}
-                </Link>
-              ))}
-              <Link
-                href={{ pathname: "/new" }}
-                style={{ marginTop: 60, color: "#f0f" }}
-              >
-                Add another connection
-              </Link>
-            </>
+            <Header showBackButton={false} title="Your connections" />
           ) : (
+            <Header large showBackButton={false} title="Greetings" />
+          )}
+
+          <Content>
+            <View style={commonStyles.flexHorizontal}>
+              <Text>
+                {npub.slice(0, 10)}...{npub.slice(npub.length - 10)}
+              </Text>
+              <IconButton onPress={chooseCopyType} title="📋" />
+            </View>
+            <IconButton onPress={logout} title="logout" />
+          </Content>
+          {appConnections.length > 0 && (
             <>
-              <Link
-                href={{ pathname: "/new" }}
-                style={{ marginTop: 40, color: "#f0f" }}
-              >
-                Create your first connection
-              </Link>
+              <FlatList
+                style={styles.list}
+                data={appConnections}
+                renderItem={({ item, index }) => (
+                  <Item connection={item} index={index} />
+                )}
+                keyExtractor={(item) => item.publicKey}
+              />
             </>
           )}
+
+          <Footer>
+            {!appConnections.length && (
+              <FooterButton
+                secondary
+                onPress={openAboutPage}
+                title="How does it work?"
+              />
+            )}
+            <FooterButton
+              onPress={addConnection}
+              title="Add a new connection"
+            />
+          </Footer>
         </>
       )}
     </Page>
   );
 }
+
+type ItemProps = { connection: AppConnection; index: number };
+function Item({ connection, index }: ItemProps) {
+  return (
+    <Link
+      key={connection.publicKey}
+      href={{
+        pathname: "/connections/[index]",
+        params: { index },
+      }}
+      style={styles.item}
+    >
+      {connection.metadata.name}
+    </Link>
+  );
+}
+
+const styles = StyleSheet.create({
+  title: {
+    fontSize: fontSizes["6xl"],
+    fontFamily: fonts.extralight,
+  },
+  titleBold: {
+    fontFamily: fonts.regular,
+    fontSize: fontSizes["6xl"],
+  },
+  titleContainer: {
+    display: "flex",
+    flexDirection: "row",
+    position: "absolute",
+    top: "27%",
+  },
+  description: {
+    fontSize: fontSizes.lg,
+    position: "absolute",
+    top: "40%",
+    textAlign: "center",
+  },
+  start: {},
+  list: {
+    width: "100%",
+    marginHorizontal: -32,
+    marginTop: -128,
+  },
+  item: {
+    width: "100%",
+    backgroundColor: colors.primary,
+    fontSize: fontSizes.xl,
+    color: colors.neutral,
+    padding: 20,
+    marginBottom: 8,
+  },
+});
