@@ -3,12 +3,15 @@ import { Page } from "../Page";
 import { Text } from "../Text";
 import React from "react";
 import { AppConnection, store } from "../../lib/store";
-import { Button, StyleSheet, View } from "react-native";
+import { Button, FlatList, StyleSheet, View } from "react-native";
 import * as Clipboard from "expo-clipboard";
-import { fontSizes, fonts } from "../../app/styles";
+import { colors, commonStyles, fontSizes, fonts } from "../../app/styles";
 import { Footer } from "../Footer";
 import { FooterButton } from "../FooterButton";
 import { Content } from "../Content";
+import { IconButton } from "../IconButton";
+import Toast from "react-native-toast-message";
+import { Header } from "../Header";
 
 export function Home() {
   const [isLoading, setLoading] = React.useState(true);
@@ -17,6 +20,8 @@ export function Home() {
   const [appConnections, setAppConnections] = React.useState<AppConnection[]>(
     []
   );
+  const [copyOptionsOpen, setCopyOptionsOpen] = React.useState(false);
+
   React.useEffect(() => {
     (async () => {
       setNPub(await store.getNPub());
@@ -42,22 +47,45 @@ export function Home() {
     router.replace("/new");
   }
 
+  async function chooseCopyType() {
+    setCopyOptionsOpen(true);
+  }
   async function copyPublicKey() {
     await Clipboard.setStringAsync(publicKey);
+    Toast.show({
+      type: "success",
+      text1: "Public Key Copied",
+      text2: `Format: Hex`,
+    });
   }
   async function copyNpub() {
     await Clipboard.setStringAsync(npub);
+    Toast.show({
+      type: "success",
+      text1: "Public Key Copied",
+      text2: `Format: NPub`,
+    });
   }
 
   return (
     <Page>
-      {isLoading ? (
+      {copyOptionsOpen ? (
+        <Content>
+          <Text>Choose an option</Text>
+          <IconButton title="Copy NPub" onPress={copyNpub} />
+          <IconButton title="Copy Hex" onPress={copyPublicKey} />
+          <IconButton
+            title="Cancel"
+            onPress={() => setCopyOptionsOpen(false)}
+          />
+        </Content>
+      ) : isLoading ? (
         <>
           <Text>Loading...</Text>
         </>
       ) : !npub ? (
         <>
-          <Text style={styles.welcome}>Welcome to</Text>
+          <Header large showBackButton={false} title="Welcome to" />
           <View style={styles.titleContainer}>
             <Text style={styles.title}>nostr</Text>
             <Text style={styles.titleBold}>Signer</Text>
@@ -79,48 +107,42 @@ export function Home() {
         </>
       ) : (
         <>
-          <Text style={styles.welcome}>Greetings</Text>
+          {appConnections.length > 0 ? (
+            <Header showBackButton={false} title="Your connections" />
+          ) : (
+            <Header large showBackButton={false} title="Greetings" />
+          )}
+
           <Content>
-            <Text>Logged in as {npub}</Text>
-            <Button title="Copy hex" onPress={copyPublicKey} />
-            <Button title="Copy npub" onPress={copyNpub} />
-            <Button onPress={logout} title="logout" />
-            {appConnections.length > 0 && (
-              <>
-                <Text style={{ marginTop: 40, fontSize: 20 }}>
-                  Your connections
-                </Text>
-                {appConnections.map((connection, index) => (
-                  <Link
-                    key={index}
-                    href={{
-                      pathname: "/connections/[index]",
-                      params: { index },
-                    }}
-                    style={{
-                      marginTop: 20,
-                      color: "#f0f",
-                    }}
-                  >
-                    {connection.metadata.name}
-                  </Link>
-                ))}
-                <Link
-                  href={{ pathname: "/new" }}
-                  style={{ marginTop: 60, color: "#f0f" }}
-                >
-                  Add another connection
-                </Link>
-              </>
-            )}
+            <View style={commonStyles.flexHorizontal}>
+              <Text>
+                {npub.slice(0, 10)}...{npub.slice(npub.length - 10)}
+              </Text>
+              <IconButton onPress={chooseCopyType} title="📋" />
+            </View>
+            <IconButton onPress={logout} title="logout" />
           </Content>
+          {appConnections.length > 0 && (
+            <>
+              <FlatList
+                style={styles.list}
+                data={appConnections}
+                renderItem={({ item, index }) => (
+                  <Item connection={item} index={index} />
+                )}
+                keyExtractor={(item) => item.publicKey}
+              />
+            </>
+          )}
 
           <Footer>
-            <FooterButton
-              secondary
-              onPress={openAboutPage}
-              title="How does it work?"
-            />
+            {!appConnections.length && (
+              <FooterButton
+                secondary
+                onPress={openAboutPage}
+                title="How does it work?"
+              />
+            )}
             <FooterButton
               onPress={addConnection}
               title="Add a new connection"
@@ -132,13 +154,23 @@ export function Home() {
   );
 }
 
+type ItemProps = { connection: AppConnection; index: number };
+function Item({ connection, index }: ItemProps) {
+  return (
+    <Link
+      key={connection.publicKey}
+      href={{
+        pathname: "/connections/[index]",
+        params: { index },
+      }}
+      style={styles.item}
+    >
+      {connection.metadata.name}
+    </Link>
+  );
+}
+
 const styles = StyleSheet.create({
-  welcome: {
-    fontSize: fontSizes["3xl"],
-    fontFamily: fonts.light,
-    position: "absolute",
-    bottom: "88%",
-  },
   title: {
     fontSize: fontSizes["6xl"],
     fontFamily: fonts.extralight,
@@ -160,4 +192,17 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   start: {},
+  list: {
+    width: "100%",
+    marginHorizontal: -32,
+    marginTop: -128,
+  },
+  item: {
+    width: "100%",
+    backgroundColor: colors.primary,
+    fontSize: fontSizes.xl,
+    color: colors.neutral,
+    padding: 20,
+    marginBottom: 8,
+  },
 });

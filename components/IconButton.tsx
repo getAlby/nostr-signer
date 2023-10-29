@@ -2,38 +2,32 @@ import { Pressable, StyleSheet } from "react-native";
 import { colors, fontSizes, fonts } from "../app/styles";
 import { Text } from "./Text";
 
-type FooterButtonProps = {
+type IconButtonProps = {
   title: string;
   onPress(): void;
-  secondary?: boolean;
 };
 
-export function FooterButton({ title, onPress, secondary }: FooterButtonProps) {
+export function IconButton({ title, onPress }: IconButtonProps) {
   return (
-    <Pressable
-      style={[styles.footerButton, secondary && styles.secondary]}
-      onPress={onPress}
-    >
+    <Pressable style={[styles.iconButton]} onPress={onPress}>
       <Text style={styles.title}>{title}</Text>
     </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
-  footerButton: {
-    width: "100%",
-    height: 48,
-    borderRadius: 8,
-    backgroundColor: colors.primary,
+  iconButton: {
+    paddingVertical: 6,
+    paddingHorizontal: 8,
+    borderRadius: 4,
+    gap: 8,
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-  },
-  secondary: {
     backgroundColor: colors.primary + "AA",
   },
   title: {
-    fontSize: fontSizes.lg,
+    fontSize: fontSizes.sm,
     fontFamily: fonts.medium,
   },
 });

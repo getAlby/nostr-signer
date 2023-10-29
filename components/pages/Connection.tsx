@@ -5,6 +5,10 @@ import React from "react";
 import { AppConnection, store } from "../../lib/store";
 import { Button } from "react-native";
 import Toast from "react-native-toast-message";
+import { Header } from "../Header";
+import { Content } from "../Content";
+import { Footer } from "../Footer";
+import { FooterButton } from "../FooterButton";
 
 export function Connection() {
   const { index: indexString } = useLocalSearchParams();
@@ -32,20 +36,20 @@ export function Connection() {
 
   return (
     <Page>
-      <Text>App Connection</Text>
-      {appConnection && (
-        <>
-          <Text>{appConnection.metadata.name}</Text>
-          <Text>{appConnection.publicKey}</Text>
-          <Text>{appConnection.relay}</Text>
-        </>
-      )}
-
-      <Button onPress={disconnect} title="DISCONNECT" />
-
-      <Link href={{ pathname: "/" }} style={{ marginTop: 40, color: "#f0f" }}>
-        Home
-      </Link>
+      <Header title={appConnection?.metadata.name ?? "App connection"} />
+      <Content>
+        {appConnection && (
+          <>
+            <Text>App Pubkey</Text>
+            <Text selectable>{appConnection.publicKey}</Text>
+            <Text>Relay</Text>
+            <Text>{appConnection.relay}</Text>
+          </>
+        )}
+      </Content>
+      <Footer>
+        <FooterButton onPress={disconnect} title="DISCONNECT" />
+      </Footer>
     </Page>
   );
 }

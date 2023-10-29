@@ -1,4 +1,4 @@
-import { Link } from "expo-router";
+import { Link, router } from "expo-router";
 import { Page } from "../Page";
 import { Text } from "../Text";
 import React from "react";
@@ -12,6 +12,11 @@ import {
 import { NostrSigner } from "../../lib/nostr";
 import { store } from "../../lib/store";
 import { finishEvent, getPublicKey } from "nostr-tools";
+import { Content } from "../Content";
+import { FooterButton } from "../FooterButton";
+import { Footer } from "../Footer";
+import { colors, commonStyles, fonts } from "../../app/styles";
+import { Header } from "../Header";
 
 export function Sign() {
   const [isSigning, setSigning] = React.useState(false);
@@ -19,6 +24,10 @@ export function Sign() {
   const [decryptResult, setDecryptResult] = React.useState<
     DecryptResult | undefined
   >();
+
+  function goHome() {
+    router.push("/");
+  }
 
   React.useEffect(() => {
     setDecryptResult(undefined);
@@ -103,53 +112,87 @@ export function Sign() {
 
   return (
     <Page>
+      <Header
+        title={isSigning ? "Signing Request..." : "Sign Request"}
+        showBackButton={!isSigning}
+      />
       {isSigning ? (
         <>
-          <ActivityIndicator size="large" />
+          <ActivityIndicator size="large" color={colors.primary} />
         </>
       ) : decryptResult ? (
         <>
-          <Text>SIGN {decryptResult.payload.method}</Text>
-          {decryptResult.payload.params.length > 0 && (
-            <>
-              <Text>
-                Kind {JSON.stringify(decryptResult.payload.params[0].kind)}
-              </Text>
-              <Text>
-                Content{" "}
-                {JSON.stringify(decryptResult.payload.params[0].content)}
-              </Text>
-              <Text>
-                Event {JSON.stringify(decryptResult.payload.params[0])}
-              </Text>
-            </>
-          )}
-
-          <View
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "center",
-              alignItems: "center",
-              width: "100%",
-              gap: 40,
-            }}
-          >
-            <Button title="Ignore" onPress={deny} />
-            <Button title="Sign" onPress={approve} />
-          </View>
+          <Content>
+            <Text style={{ fontFamily: fonts.medium }}>
+              {getUserFriendlyMethodName(decryptResult.payload.method)}
+            </Text>
+            <Text>
+              {getUserFriendlyMethodDescription(
+                decryptResult.appConnection.metadata.name,
+                decryptResult.payload.method
+              )}
+            </Text>
+            {decryptResult.payload.params.length > 0 && (
+              <View style={[commonStyles.textBackground, { gap: 8 }]}>
+                <>
+                  <Text>
+                    Kind {JSON.stringify(decryptResult.payload.params[0].kind)}
+                  </Text>
+                  <Text>
+                    Content{" "}
+                    {JSON.stringify(
+                      decryptResult.payload.params[0].content,
+                      null,
+                      2
+                    )}
+                  </Text>
+                  <Text>
+                    Event {JSON.stringify(decryptResult.payload.params[0])}
+                  </Text>
+                </>
+              </View>
+            )}
+          </Content>
+          <Footer>
+            <FooterButton secondary title="Ignore" onPress={deny} />
+            <FooterButton title="Approve" onPress={approve} />
+          </Footer>
         </>
       ) : (
         <>
-          <Text>No more notifications to sign</Text>
-          <Link
-            href={{ pathname: "/" }}
-            style={{ marginTop: 20, color: "#f0f" }}
-          >
-            Home
-          </Link>
+          <Content>
+            <Text>No more notifications to sign</Text>
+          </Content>
+          <Footer>
+            <FooterButton title="Home" onPress={goHome} />
+          </Footer>
         </>
       )}
     </Page>
   );
+}
+
+function getUserFriendlyMethodName(method: string): React.ReactNode {
+  switch (method) {
+    case "get_public_key":
+      return "Get public key";
+    case "sign_event":
+      return "Sign an event";
+    default:
+      return method;
+  }
+}
+
+function getUserFriendlyMethodDescription(
+  appName: string,
+  method: string
+): React.ReactNode {
+  switch (method) {
+    case "get_public_key":
+      return `${appName} wishes to know your public key.`;
+    case "sign_event":
+      return `${appName} wishes to sign an event:`;
+    default:
+      return method;
+  }
 }

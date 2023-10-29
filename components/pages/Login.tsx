@@ -1,7 +1,7 @@
-import { Button, StyleSheet, TextInput, View } from "react-native";
+import { StyleSheet, TextInput, View } from "react-native";
 import { Page } from "../Page";
 import React from "react";
-import { Link, router } from "expo-router";
+import { router } from "expo-router";
 import { store } from "../../lib/store";
 import { generatePrivateKey, nip19 } from "nostr-tools";
 import * as Clipboard from "expo-clipboard";
@@ -10,6 +10,8 @@ import { Content } from "../Content";
 import { FooterButton } from "../FooterButton";
 import { Footer } from "../Footer";
 import { colors } from "../../app/styles";
+import { IconButton } from "../IconButton";
+import { Header } from "../Header";
 
 export function Login() {
   const [text, setText] = React.useState("");
@@ -33,6 +35,7 @@ export function Login() {
 
   return (
     <Page>
+      <Header title="Start" large showBackButton={false} />
       <Content>
         <Text style={styles.instructions}>
           Enter your Nostr private key to start
@@ -43,19 +46,8 @@ export function Login() {
           onChangeText={setText}
           placeholder="nsec1..."
         />
-        <Button title="Paste" onPress={paste} />
-        <Button title="Random" onPress={generateKey} />
-        <View
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
-            width: "100%",
-            gap: 24,
-            marginTop: 24,
-          }}
-        ></View>
+        <IconButton title="Paste" onPress={paste} />
+        <IconButton title="Generate new key" onPress={generateKey} />
       </Content>
 
       <Footer>
@@ -75,6 +67,8 @@ const styles = StyleSheet.create({
     padding: 10,
     backgroundColor: colors.neutral,
     color: colors["neutral-secondary"],
+    borderColor: colors.primary,
+    borderWidth: 1,
     borderRadius: 6,
   },
 });

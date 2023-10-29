@@ -17,6 +17,11 @@ import { registerAppWithNip46PushServer } from "../../lib/registerAppWithNip46Pu
 import { sendNip46ConnectRequest } from "../../lib/sendNip46ConnectRequest";
 import { BarCodeScannedCallback, BarCodeScanner } from "expo-barcode-scanner";
 import * as Clipboard from "expo-clipboard";
+import { Header } from "../Header";
+import { Content } from "../Content";
+import { Footer } from "../Footer";
+import { FooterButton } from "../FooterButton";
+import { colors, commonStyles } from "../../app/styles";
 
 export function NewConnection() {
   const [isScanning, setScanning] = React.useState(false);
@@ -30,6 +35,9 @@ export function NewConnection() {
       setScanning(true);
     }
   }
+  React.useEffect(() => {
+    scan();
+  }, []);
 
   const handleBarCodeScanned: BarCodeScannedCallback = ({ data }) => {
     setScanning(false);
@@ -84,46 +92,35 @@ export function NewConnection() {
 
   return (
     <Page>
-      <Text>New Connection</Text>
+      <Header title="Add a new connection" />
 
       {isLoading ? (
         <>
-          <ActivityIndicator size="large" style={{ marginVertical: 40 }} />
-          <Text>{connectStatus}</Text>
+          <Content>
+            <ActivityIndicator
+              size="large"
+              style={{ marginTop: 80 }}
+              color={colors.primary}
+            />
+            <View style={commonStyles.textBackground}>
+              <Text>{connectStatus}</Text>
+            </View>
+          </Content>
         </>
       ) : (
         <>
-          {isScanning && (
-            <BarCodeScanner
-              onBarCodeScanned={handleBarCodeScanned}
-              style={styles.scanner}
-            />
-          )}
-          <Text style={{ marginVertical: 20 }}>
-            Not sure what to do? open the{" "}
-            <Link
-              href="https://rolznz.github.io/connect/"
-              style={{ color: "#ff00ff" }}
-            >
-              Nostr Connect Playground
-            </Link>{" "}
-            on your PC and scan the QR code.
-          </Text>
-
-          <View style={{ marginTop: 20 }}>
-            <Button onPress={scan} title="SCAN" />
-          </View>
-
-          <View style={{ marginTop: 20 }}>
-            <Button onPress={paste} title="PASTE" />
-          </View>
-
-          <Link
-            href={{ pathname: "/" }}
-            style={{ marginTop: 40, color: "#f0f" }}
-          >
-            Home
-          </Link>
+          <Content>
+            <Text>Scan or paste a NIP-46 connection string</Text>
+            {isScanning && (
+              <BarCodeScanner
+                onBarCodeScanned={handleBarCodeScanned}
+                style={styles.scanner}
+              />
+            )}
+          </Content>
+          <Footer>
+            <FooterButton onPress={paste} title="Paste connection string" />
+          </Footer>
         </>
       )}
     </Page>
@@ -132,6 +129,8 @@ export function NewConnection() {
 const styles = StyleSheet.create({
   scanner: {
     width: "100%",
-    height: "50%",
+    height: "70%",
+    borderRadius: 32,
+    overflow: "hidden",
   },
 });

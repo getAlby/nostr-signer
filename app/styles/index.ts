@@ -1,3 +1,5 @@
+import { StyleSheet } from "react-native";
+
 // TODO: consider using NativeWind (https://www.nativewind.dev/)
 export const colors = {
   primary: "#47585C",
@@ -23,3 +25,20 @@ export const fontSizes = {
   "5xl": 48,
   "6xl": 60,
 };
+
+export const commonStyles = StyleSheet.create({
+  flexHorizontal: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    width: "100%",
+    gap: 4,
+  },
+  textBackground: {
+    marginTop: 20,
+    backgroundColor: colors.primary,
+    padding: 16,
+    borderRadius: 8,
+  },
+});

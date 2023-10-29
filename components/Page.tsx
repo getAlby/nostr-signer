@@ -1,15 +1,38 @@
 import {
-  ImageBackground,
   Keyboard,
   StyleSheet,
   TouchableWithoutFeedback,
   View,
 } from "react-native";
-import Toast from "react-native-toast-message";
+import Toast, { BaseToast } from "react-native-toast-message";
 import { useFonts } from "expo-font";
 import React from "react";
 import { SplashScreen } from "expo-router";
-const splash = require("../assets/splash.png");
+import { colors, fonts } from "../app/styles";
+
+const toastConfig = {
+  /*
+    Overwrite 'success' type,
+    by modifying the existing `BaseToast` component
+  */
+  success: (props) => (
+    <BaseToast
+      {...props}
+      style={{
+        backgroundColor: colors.primary,
+        borderLeftColor: colors.neutral,
+      }}
+      contentContainerStyle={{}}
+      text1Style={{
+        color: colors.neutral,
+        fontFamily: fonts.medium,
+      }}
+      text2Style={{
+        color: colors.neutral,
+      }}
+    />
+  ),
+};
 
 export function Page({ children }: React.PropsWithChildren) {
   const [fontsLoaded] = useFonts({
@@ -19,29 +42,21 @@ export function Page({ children }: React.PropsWithChildren) {
     "GeneralSans-Medium": require("../assets/fonts/GeneralSans-Medium.otf"),
     "GeneralSans-Bold": require("../assets/fonts/GeneralSans-Bold.otf"),
   });
-  const splashLoaded = !!splash;
-  const loaded = fontsLoaded && splashLoaded;
   React.useEffect(() => {
-    if (loaded) {
+    if (fontsLoaded) {
       SplashScreen.hideAsync();
     }
   });
-  if (!loaded) {
+  if (!fontsLoaded) {
     return null;
   }
 
   return (
     <>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-        <ImageBackground
-          style={styles.imgBackground}
-          resizeMode="cover"
-          source={splash}
-        >
-          <View style={styles.container}>{children}</View>
-        </ImageBackground>
+        <View style={styles.container}>{children}</View>
       </TouchableWithoutFeedback>
-      <Toast />
+      <Toast config={toastConfig} />
     </>
   );
 }
@@ -55,10 +70,5 @@ const styles = StyleSheet.create({
     height: "100%",
     display: "flex",
     flexDirection: "column",
-  },
-  imgBackground: {
-    width: "100%",
-    height: "100%",
-    flex: 1,
   },
 });
