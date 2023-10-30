@@ -1,9 +1,4 @@
-import {
-  Keyboard,
-  StyleSheet,
-  TouchableWithoutFeedback,
-  View,
-} from "react-native";
+import { StyleSheet, View } from "react-native";
 import Toast, { BaseToast } from "react-native-toast-message";
 import { useFonts } from "expo-font";
 import React from "react";
@@ -53,9 +48,7 @@ export function Page({ children }: React.PropsWithChildren) {
 
   return (
     <>
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-        <View style={styles.container}>{children}</View>
-      </TouchableWithoutFeedback>
+      <View style={styles.container}>{children}</View>
       <Toast config={toastConfig} />
     </>
   );

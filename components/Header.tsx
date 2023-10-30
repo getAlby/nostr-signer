@@ -1,5 +1,5 @@
 import { StyleSheet, View } from "react-native";
-import { commonStyles, fontSizes, fonts } from "../app/styles";
+import { fontSizes, fonts } from "../app/styles";
 import { Text } from "./Text";
 import { IconButton } from "./IconButton";
 import { router } from "expo-router";
@@ -37,12 +37,11 @@ const styles = StyleSheet.create({
     paddingTop: 64,
     paddingHorizontal: 32,
     display: "flex",
-    flexDirection: "row",
+    flexDirection: "column",
     justifyContent: "center",
-    alignItems: "flex-start",
+    alignItems: "center",
     width: "100%",
     position: "relative",
-    height: 220,
   },
 
   title: {

@@ -118,7 +118,9 @@ export function Sign() {
       />
       {isSigning ? (
         <>
-          <ActivityIndicator size="large" color={colors.primary} />
+          <Content>
+            <ActivityIndicator size="large" color={colors.primary} />
+          </Content>
         </>
       ) : decryptResult ? (
         <>
@@ -133,7 +135,13 @@ export function Sign() {
               )}
             </Text>
             {decryptResult.payload.params.length > 0 && (
-              <View style={[commonStyles.textBackground, { gap: 8 }]}>
+              <View
+                style={[
+                  commonStyles.textBackground,
+                  commonStyles.marginHorizontal,
+                  { gap: 8 },
+                ]}
+              >
                 <>
                   <Text>
                     Kind {JSON.stringify(decryptResult.payload.params[0].kind)}
@@ -161,7 +169,9 @@ export function Sign() {
       ) : (
         <>
           <Content>
-            <Text>No more notifications to sign</Text>
+            <View style={{ paddingVertical: 150 }}>
+              <Text>No more notifications to sign</Text>
+            </View>
           </Content>
           <Footer>
             <FooterButton title="Home" onPress={goHome} />

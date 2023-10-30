@@ -3,7 +3,14 @@ import { Page } from "../Page";
 import { Text } from "../Text";
 import React from "react";
 import { AppConnection, store } from "../../lib/store";
-import { Button, FlatList, StyleSheet, View } from "react-native";
+import {
+  Button,
+  Dimensions,
+  FlatList,
+  Image,
+  StyleSheet,
+  View,
+} from "react-native";
 import * as Clipboard from "expo-clipboard";
 import { colors, commonStyles, fontSizes, fonts } from "../../app/styles";
 import { Footer } from "../Footer";
@@ -12,8 +19,10 @@ import { Content } from "../Content";
 import { IconButton } from "../IconButton";
 import Toast from "react-native-toast-message";
 import { Header } from "../Header";
+const logo = require("../../assets/logo.png");
 
 export function Home() {
+  const dimensions = Dimensions.get("window");
   const [isLoading, setLoading] = React.useState(true);
   const [publicKey, setPublicKey] = React.useState<string | undefined>();
   const [npub, setNPub] = React.useState<string | undefined>();
@@ -70,31 +79,41 @@ export function Home() {
   return (
     <Page>
       {copyOptionsOpen ? (
-        <Content>
-          <Text>Choose an option</Text>
-          <IconButton title="Copy NPub" onPress={copyNpub} />
-          <IconButton title="Copy Hex" onPress={copyPublicKey} />
-          <IconButton
-            title="Cancel"
-            onPress={() => setCopyOptionsOpen(false)}
-          />
-        </Content>
+        <>
+          <Header title="Choose an option" showBackButton={false} />
+          <Content>
+            <IconButton title="Copy NPub" onPress={copyNpub} />
+            <IconButton title="Copy Hex" onPress={copyPublicKey} />
+            <IconButton
+              title="Cancel"
+              onPress={() => setCopyOptionsOpen(false)}
+            />
+          </Content>
+        </>
       ) : isLoading ? (
         <>
           <Text>Loading...</Text>
         </>
       ) : !npub ? (
         <>
-          <Header large showBackButton={false} title="Welcome to" />
-          <View style={styles.titleContainer}>
-            <Text style={styles.title}>nostr</Text>
-            <Text style={styles.titleBold}>Signer</Text>
-          </View>
-          <Text style={styles.description}>
-            Sign Nostr events remotely{"\n"}with your phone
-          </Text>
-
-          <Content></Content>
+          <Content>
+            <Text style={styles.welcome}>Welcome to</Text>
+            <Image
+              source={logo}
+              style={{
+                width: dimensions.width * 0.2,
+                height: dimensions.width * 0.2,
+                display: "flex",
+              }}
+            />
+            <View style={styles.titleContainer}>
+              <Text style={styles.title}>nostr</Text>
+              <Text style={styles.titleBold}>Signer</Text>
+            </View>
+            <Text style={styles.description}>
+              Sign Nostr events remotely{"\n"}with your phone
+            </Text>
+          </Content>
 
           <Footer>
             <FooterButton
@@ -121,19 +140,16 @@ export function Home() {
               <IconButton onPress={chooseCopyType} title="📋" />
             </View>
             <IconButton onPress={logout} title="logout" />
+            <View style={styles.appConnections}>
+              {appConnections.map((connection, index) => (
+                <Item
+                  key={connection.publicKey}
+                  connection={connection}
+                  index={index}
+                />
+              ))}
+            </View>
           </Content>
-          {appConnections.length > 0 && (
-            <>
-              <FlatList
-                style={styles.list}
-                data={appConnections}
-                renderItem={({ item, index }) => (
-                  <Item connection={item} index={index} />
-                )}
-                keyExtractor={(item) => item.publicKey}
-              />
-            </>
-          )}
 
           <Footer>
             {!appConnections.length && (
@@ -163,7 +179,7 @@ function Item({ connection, index }: ItemProps) {
         pathname: "/connections/[index]",
         params: { index },
       }}
-      style={styles.item}
+      style={styles.appConnection}
     >
       {connection.metadata.name}
     </Link>
@@ -171,6 +187,11 @@ function Item({ connection, index }: ItemProps) {
 }
 
 const styles = StyleSheet.create({
+  welcome: {
+    marginTop: "15%",
+    fontSize: fontSizes["3xl"],
+    fontFamily: fonts.light,
+  },
   title: {
     fontSize: fontSizes["6xl"],
     fontFamily: fonts.extralight,
@@ -182,27 +203,22 @@ const styles = StyleSheet.create({
   titleContainer: {
     display: "flex",
     flexDirection: "row",
-    position: "absolute",
-    top: "27%",
   },
   description: {
     fontSize: fontSizes.lg,
-    position: "absolute",
-    top: "40%",
     textAlign: "center",
   },
   start: {},
-  list: {
+  appConnections: {
     width: "100%",
-    marginHorizontal: -32,
-    marginTop: -128,
+    marginTop: 16,
+    gap: 8,
   },
-  item: {
+  appConnection: {
     width: "100%",
     backgroundColor: colors.primary,
     fontSize: fontSizes.xl,
     color: colors.neutral,
     padding: 20,
-    marginBottom: 8,
   },
 });

@@ -35,8 +35,14 @@ export const commonStyles = StyleSheet.create({
     width: "100%",
     gap: 4,
   },
+  paddingHorizontal: {
+    paddingHorizontal: 32,
+    width: "100%",
+  },
+  marginHorizontal: {
+    marginHorizontal: 32,
+  },
   textBackground: {
-    marginTop: 20,
     backgroundColor: colors.primary,
     padding: 16,
     borderRadius: 8,

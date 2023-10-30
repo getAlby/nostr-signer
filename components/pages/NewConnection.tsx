@@ -4,6 +4,7 @@ import { Text } from "../Text";
 import {
   ActivityIndicator,
   Button,
+  Dimensions,
   StyleSheet,
   TextInput,
   View,
@@ -74,11 +75,13 @@ export function NewConnection() {
       setConnectStatus("Registering with NIP-46 push server");
       await registerAppWithNip46PushServer(expoToken, appConnection.publicKey);
       router.replace("/");
-      Toast.show({
-        type: "success",
-        text1: "New app connection added",
-        text2: `${appConnection.metadata.name} - ${appConnection.relay}`,
-      });
+      setTimeout(() => {
+        Toast.show({
+          type: "success",
+          text1: "New app connection added",
+          text2: `${appConnection.metadata.name} - ${appConnection.relay}`,
+        });
+      }, 100);
     } catch (error) {
       console.error(error);
       Toast.show({
@@ -112,10 +115,12 @@ export function NewConnection() {
           <Content>
             <Text>Scan or paste a NIP-46 connection string</Text>
             {isScanning && (
-              <BarCodeScanner
-                onBarCodeScanned={handleBarCodeScanned}
-                style={styles.scanner}
-              />
+              <View style={commonStyles.paddingHorizontal}>
+                <BarCodeScanner
+                  onBarCodeScanned={handleBarCodeScanned}
+                  style={styles.scanner}
+                />
+              </View>
             )}
           </Content>
           <Footer>
@@ -126,11 +131,15 @@ export function NewConnection() {
     </Page>
   );
 }
+
+const dimensions = Dimensions.get("window");
 const styles = StyleSheet.create({
   scanner: {
     width: "100%",
-    height: "70%",
+    height: dimensions.height * 0.5,
     borderRadius: 32,
     overflow: "hidden",
+    borderColor: colors.primary,
+    borderWidth: 1,
   },
 });

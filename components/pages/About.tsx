@@ -22,9 +22,11 @@ export function About() {
 
   return (
     <Page>
-      <Header large title="About" showBackButton={false} />
+      <Header large title="How does it work?" showBackButton={false} />
       <Content>
-        <View style={commonStyles.textBackground}>
+        <View
+          style={[commonStyles.textBackground, commonStyles.marginHorizontal]}
+        >
           <Text>
             Nostr Signer is a mobile app designed to streamline the signing
             process within the Nostr ecosystem. It simplifies the management of

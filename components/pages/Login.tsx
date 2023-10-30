@@ -9,7 +9,7 @@ import { Text } from "../Text";
 import { Content } from "../Content";
 import { FooterButton } from "../FooterButton";
 import { Footer } from "../Footer";
-import { colors } from "../../app/styles";
+import { colors, commonStyles } from "../../app/styles";
 import { IconButton } from "../IconButton";
 import { Header } from "../Header";
 
@@ -40,12 +40,14 @@ export function Login() {
         <Text style={styles.instructions}>
           Enter your Nostr private key to start
         </Text>
-        <TextInput
-          style={styles.input}
-          value={text}
-          onChangeText={setText}
-          placeholder="nsec1..."
-        />
+        <View style={commonStyles.paddingHorizontal}>
+          <TextInput
+            style={[styles.input]}
+            value={text}
+            onChangeText={setText}
+            placeholder="nsec1..."
+          />
+        </View>
         <IconButton title="Paste" onPress={paste} />
         <IconButton title="Generate new key" onPress={generateKey} />
       </Content>

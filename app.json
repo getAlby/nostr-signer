@@ -2,14 +2,14 @@
   "expo": {
     "name": "Nostr Signer",
     "slug": "nostr-signer",
-    "version": "1.2.0",
+    "version": "1.2.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
     "scheme": "nip46",
     "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "contain",
+      "image": "./assets/splash.jpg",
+      "resizeMode": "cover",
       "backgroundColor": "#ffffff"
     },
     "experiments": {
