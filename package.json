@@ -35,7 +35,7 @@
     "expo-status-bar": "~1.6.0",
     "nostr-tools": "^1.14.2",
     "react": "18.2.0",
-    "react-native": "0.72.5",
+    "react-native": "0.72.6",
     "react-native-gesture-handler": "~2.12.0",
     "react-native-get-random-values": "^1.9.0",
     "react-native-quick-base64": "^2.0.7",
